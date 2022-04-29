@@ -1,0 +1,46 @@
+{
+  "router": [
+    {
+      "path": "/trend_dev",
+      "component": "tableau_view.vue",
+      "meta": {
+        "title": "深圳关区陆路口岸进出口态势",
+        "url": "/views/_0/sheet0?:showAppBanner=false&:origin=viz_share_link&:display_count=n&:showVizHome=n"
+      }
+    },
+    {
+      "path": "/vehicle",
+      "component": "tableau_view.vue",
+      "meta": {
+        "title": "水客化车辆分析",
+        "url": "/views/9/sheet0?:display_count=n&:showVizHome=n&:origin=viz_share_link:showVizHome=no&:embed=true"
+      }
+    },
+    {
+      "path": "/",
+      "component": "Home.vue",
+      "meta": {
+        "title": "跟科跟人分析",
+        "url": ""
+      },
+      "children": [
+        {
+          "path": "/check",
+          "component": "tableau_view.vue",
+          "meta": {
+            "title": "查验跟科分析",
+            "url": "/views/10/sheet0?:showAppBanner=false&:display_count=n&:showVizHome=n&:origin=viz_share_link"
+          }
+        },
+        {
+          "path": "/oversea",
+          "component": "tableau_view.vue",
+          "meta": {
+            "title": "海运出口查验跟人分析",
+            "url": "/views/18/sheet0?:showAppBanner=false&:display_count=n&:showVizHome=n&:origin=viz_share_link"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+<html>
+<head>
+<meta charset="utf-8"/>
+</head>
+<body>
+<h1>test post</h1>
+报关单号:<input name="报关单号" value="010120200000122646"/>
+<input type=button value="go" onclick="on_go()"/>
+<script src="app.js"></script>
+<div id="dbg"></div>
+<script>
+var tableau_root = 'http://10.94.81.132';
+//e.g. json_api('//'+location.hostname+':5000/neo4j.post_graph',o2s({"报关单号":"521320200630144656"}),'POST',(o,s)=>console.log(s))
+var $=k=>document.all[k];
+function on_go(){
+        var get_a = ()=> ({"报关单号":$('报关单号').value});
+        json_api(tableau_root + ':5000/neo4j.post_graph', o2s(get_a()), 'POST',
+            (o,s)=>{
+                if(!o) return alert(s)
+                $('dbg').innerHTML =s;
+            })
+}
+</script>
+
+</body>
+</html>

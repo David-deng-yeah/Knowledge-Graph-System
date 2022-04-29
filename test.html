@@ -1,0 +1,43 @@
+<body>
+<h1>test 2</h1>
+name <input type=text id="name" value="wjc"/><br/>
+password <input type=password id="password" value="Mega1234."/><br/>
+<input type=button value="go" onclick="on_go()"/>
+<script>
+let o2s=(o)=>{ try{ return JSON.stringify(o) } catch(ex){}}
+let s2o=(s)=>{ try{ return JSON.parse(s) } catch(ex){} }
+function do_ajax(u,a,m,cb){
+	let x = new XMLHttpRequest();
+	x.onreadystatechange=()=>(x.readyState==4)?cb(x.responseText):null;
+	x.onerror=()=>cb(null);
+	x.open(m,u,true);
+	x.setRequestHeader('Accept', 'application/json');
+	x.setRequestHeader('Content-Type', 'application/json');
+	x.send(a);
+	return x;
+}
+let tableau_root = 'http://10.94.81.132';
+function on_go(){
+	let name = 'wjc'
+		let password = 'Mega1234.'
+		let a = {credentials: { name, password, site:{}}};
+	do_ajax(tableau_root + '/api/3.9/auth/signin',
+			o2s(a),
+			//'{"credentials":{"name":"wjc","password":"Mega1234.","site":{}}}',
+			'POST',(s)=>{
+			let o = s2o(s);
+			let credentials = o.credentials || {}
+			let {token} = credentials
+			//alert(token);
+			if(token){
+				let options = "?:showVizHome=no&:embed=true&:showShareOptions=false&:toolbar=top&:tabs=no"
+				let actual_url = tableau_root + "/trusted/" + token + "/views/" //+ url.replace("/sheets/", "/")
+				+ options;
+				location.href=actual_url
+			}else{
+alert('Login failed');//TODO
+			}
+			})
+}
+</script>
+

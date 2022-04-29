@@ -1,0 +1,11 @@
+[mysql-proxy]
+proxy-address=0.0.0.0:5258
+proxy-backend-addresses=10.54.202.211:5258
+#proxy-read-only-backend-addresses=
+#proxy-lua-script=
+#pid-file
+#log-file
+plugins=proxy
+#log-level=debug
+keepalive=true
+daemon=true
