@@ -8,12 +8,13 @@ app = Flask(__name__)
 app.secret_key = "secret_key"
 
 # url of tableau server
+# tableau服务器的ip地址
 server_url = 'http://10.94.81.132'
 
-#
 import logic
 import neo4j
 
+# 用户信息类
 class UserLoginInfo:
     username = ""
     password = ""
@@ -30,6 +31,7 @@ login_infos = {}
 login_name_id_map = {}
 
 app_path = os.path.dirname(__file__)
+# 图像路径
 img_path = app_path + "/static/generated"
 if not os.path.exists(img_path):
     os.makedirs(img_path)
@@ -52,8 +54,6 @@ import importlib
 def handle(c, m):
     try:
         global login_infos
-
-
         global login_name_id_map
         cc = str(c)
         if (cc=='logic' or cc=='neo4j'):
@@ -97,6 +97,7 @@ def reload():
 
 # Route for handling the login page logic
 # Checks if user exists and password matches
+# 用以处理登录事件的路由，用以确定用户是否存在，并且密码是否配对
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
@@ -107,6 +108,7 @@ def login():
     if 'username' in request.args:
         username = request.args['username']
         password = request.args['password']
+        # 创建一个用户信息类
         userinfo = UserLoginInfo(username, password)
         tableau_auth = tsc.TableauAuth(username, password)
         try:
@@ -138,7 +140,7 @@ def login():
     #         error = "Invalid Token. Please try again."
     else:
         error = "Invalid login information."
-
+    # 如果没出错误
     if error is None:
         login_lock.acquire()
         userid = "{}.{}".format(time.time(), login_count)
@@ -152,11 +154,12 @@ def login():
         output = {"state": "succeeded", "userid": userid, "username":username, "token": token}
     else:
         output = {"state": "failed", "error": error}
+    # 生成返回数据报，包含登录状态，用户信息
     resp = make_resp(request, output)
     #time.sleep(2) # wjc tmp block a little ... wtf... too...
     return resp
 
-
+# 用来处理用户登出的路由
 @app.route('/logout')
 def logout():
     global login_lock
@@ -281,6 +284,7 @@ def get_token():
     if 'userid' in request.args:
         userid = request.args["userid"]
         # Because token has access control problem, require logged in all the time.
+        # 锁上后端线程，等待用户登录线程执行完毕
         login_lock.acquire()
         if userid in login_infos:
             userinfo = login_infos[userid]
@@ -312,7 +316,7 @@ def get_token():
         output["error"] = "missing userid"
     return make_resp(request, output)
 
-
+# 用以终止用户登录的线程
 class LoginExpiryThread(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)

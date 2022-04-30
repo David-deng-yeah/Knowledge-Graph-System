@@ -11,10 +11,12 @@ def test(request):
 
 #import dba
 from dba.dba import main as dba
-from dba.dba2 import main as dba2
+from dba.dba_rubbish.dba2 import main as dba2
 
 import json
 #db = dba.main(dbstr_file='/home/gitlocal/web/dba.tmp')
+
+# 用于执行sql
 db1 = dba(dbstr_file='/home/gitlocal/web/dba.tmp')
 db2 = dba2(dbstr_file='/home/gitlocal/web/dba2.tmp')
 #sql = "show databases;"
@@ -24,6 +26,7 @@ g_user_view_map = {}
 def build_view_map(server):
     rt = {}
     erra = []
+    # 处理分页项目
     # TODO need to handl pagination_item in future
     workbooks, pagination_item = server.workbooks.get()
     for x in workbooks:
@@ -75,6 +78,7 @@ def check_view(request):
 
     return rt
 
+# 列出服务器的视图
 def list_view(request):
     username = request.username
     userid = request.userid
@@ -128,7 +132,7 @@ def get_routers(request):
     select * from web.tmp order by srt,id asc;
     """ #.format()
     #print(db.dosql(sql))
-
+    # 进行数据库查询
     rows,cols,rt = db1.dosql(sql)
     #print(rows)
     #print(cols)
@@ -180,11 +184,12 @@ def get_routers(request):
     results = {"router": _routers}
     return results
 
+# 返回router
 def routers_show(request):
     sql = """
     select * from web.tmp order by srt,id asc;
     """ #.format()
-
+    # 进行数据库查询
     rows,cols,rt = db1.dosql(sql)
     routers = []
     for row in rows:
@@ -204,6 +209,7 @@ def routers_show(request):
         })
     return routers
 
+# 根据request，通过sql向向web.tmp中插入数据
 def routers_insert(request):
     s = request.get_data()
     if not s:
@@ -334,6 +340,7 @@ def routers_update(request):
     rst = {"sts": sts, "af": af}
     return rst
 
+# 从数据库中查询数据
 def sql_select_column(request):
     s = request.get_data()
     if not s:
@@ -351,6 +358,8 @@ def sql_select_column(request):
     #sql = """
     #select 进出境时间,进出口标记,出入境口岸,是否查验,经营单位名称 from database_1.bgds_inspection_details_2019_2020ne limit 10;
     #"""
+
+    # mysql的话就从db1中及进行查询
     if _dba == 'mysql':
         rows,cols,rt = db1.dosql(sql)
     else:

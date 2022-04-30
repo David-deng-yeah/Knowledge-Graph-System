@@ -6,9 +6,8 @@ def test(request):
 
 #import dba
 from dba.dba import main as dba
-from dba.dba2 import main as dba2
-from flask import Flask, abort, render_template, redirect, url_for, request, make_response,jsonify
-import requests, os, time, random, threading
+from dba.dba_rubbish.dba2 import main as dba2
+import requests, time, random, threading
 import json
 #db = dba.main(dbstr_file='/home/gitlocal/web/dba.tmp')
 db1 = dba(dbstr_file='/home/gitlocal/web/dba.tmp')
@@ -120,6 +119,8 @@ def list_view(request):
     # return {'STS':'TOOD', 'username': username, 'userid': userid, "flg_server": flg_server, 'rows':rows}
 
 #children = []
+# 前端通过调用此方法可以获取数据表中的路由信息，此方法会返回一个json心事的路由表
+# 前端可以根据路由表中的信息在侧边菜单栏生成对应的菜单
 def get_routers(request):
     sql = """
     select * from web.tmp order by srt,id asc;
@@ -200,7 +201,7 @@ def routers_show(request):
             "id":_id, "srt":_srt, "self_key":_self_key, "parent_key":_parent_key, "path":_path, "component":_component, "title":_title, "url":_url, "db":_db, "sql_sentence":_sql, "disable": True
         })
     return routers
-
+# --------------------对路由表进行增删查改-------------------
 def routers_insert(request):
     s = request.get_data()
 
@@ -331,21 +332,22 @@ def routers_update(request):
     #
     rst = {"type": sts, "msg": af}
     return rst
+# --------------------------------------------------------
 
+
+# ----------------在mysql中进行报关单属性查询-----------------
+# 在报关单中查询对应的列
 def sql_select_column(request):
     s = request.get_data()
     if not s:
         return {"type":'error', 'msg':'need post data'}
-
     print('DEBUG data',s)
     data = json.loads(s)
     _dba = data['_dba']
     sql_sentence = data['sql_sentence']
-
     sql = """
     {sql_sentence}
     """ .format(sql_sentence=sql_sentence)
-
     #sql = """
     #select 进出境时间,进出口标记,出入境口岸,是否查验,经营单位名称 from database_1.bgds_inspection_details_2019_2020ne limit 10;
     #"""
@@ -363,6 +365,7 @@ def sql_select_column(request):
         sql_data.append(row_dict)
     return {'sql_data': sql_data, 'col_array': col_array}
 
+# 在mysql中执行报关单查询
 def bgd_search(request):
     s = request.get_data()
     if not s:
@@ -384,29 +387,29 @@ def bgd_search(request):
             col_array.append(col)
         sql_data.append(row_dict)
     return {'sql_data': sql_data, 'col_array': col_array}
-
-def bgd_search_cargo_information(request):
-    s = request.get_data()
-    if not s:
-        return {"type":'error', "msg":'need post data'}
-
-    print('DEBUG data', s)
-    data = json.loads(s)
-    #_dba = data['_dba']
-    报关单号 = data['报关单号']
-
-    sql = "select 商品编码列表,商品名称列表,品规数列表,商品美元单价价值列表,商品美元价值列表,商品第一计量数量列表,商品第二计量数量列表,商品产销国列表 from database_1.bgds_inspection_details_2020_view where 报关单号={报关单号} limit 1".format(报关单号=报关单号)
-
-    rows,cols,rt = db1.dosql(sql)
-    sql_data = []
-    for row in rows:
-        row_dict = {}
-        col_array = []
-        for i,col in enumerate(cols):
-            row_dict[col] = str(row[i])
-            col_array.append(col)
-        sql_data.append(row_dict)
-    return {'sql_data': sql_data, 'col_array': col_array}
+# --------------------------------------------------------
+# def bgd_search_cargo_information(request):
+#     s = request.get_data()
+#     if not s:
+#         return {"type":'error', "msg":'need post data'}
+#
+#     print('DEBUG data', s)
+#     data = json.loads(s)
+#     #_dba = data['_dba']
+#     报关单号 = data['报关单号']
+#
+#     sql = "select 商品编码列表,商品名称列表,品规数列表,商品美元单价价值列表,商品美元价值列表,商品第一计量数量列表,商品第二计量数量列表,商品产销国列表 from database_1.bgds_inspection_details_2020_view where 报关单号={报关单号} limit 1".format(报关单号=报关单号)
+#
+#     rows,cols,rt = db1.dosql(sql)
+#     sql_data = []
+#     for row in rows:
+#         row_dict = {}
+#         col_array = []
+#         for i,col in enumerate(cols):
+#             row_dict[col] = str(row[i])
+#             col_array.append(col)
+#         sql_data.append(row_dict)
+#     return {'sql_data': sql_data, 'col_array': col_array}
 
 def ver(self):
     tm = time.time()

@@ -11,11 +11,13 @@ import pymysql
 from py2neo import *
 import json
 
+# 连接Neo4j数据库
 bgds_detail_inspection_graph=Graph("http://10.94.81.132:7474",auth=("neo4j","ABCabc123"))
 
 node_baoguanhao = None
 node_cangdanhao = None
 
+# 建立节点
 def buildNodes(nodeRecord):
     global node_baoguanhao, node_cangdanhao
     id = nodeRecord.identity
@@ -66,7 +68,7 @@ def buildEdges(relationRecord):
         data['weight'] = edge_dict['weight']
     return {"data": data}
 
-# 返回点和边
+# 返回点和边组成的json数据
 def _main_graph(kv_dict={},limit=999,graph=bgds_detail_inspection_graph):
     print('_main_graph', kv_dict)
 
@@ -116,7 +118,7 @@ def _main_graph(kv_dict={},limit=999,graph=bgds_detail_inspection_graph):
     [edges.append(i) for i in tmp if i not in edges]
     return {"nodes": nodes, "edges": edges}
 
-# 调用main_graph
+# 前端通过post请求此方法，继而调用main_graph函数得到节点和边的数据，并在前端中通过json_api和o2s将数据转为json格式
 def post_graph(request=None):
     if request:
         # if request.content_type.startswith('application/json'):

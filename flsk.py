@@ -8,6 +8,7 @@ import json
 app = Flask(__name__)
 #app.secret_key = "secret_key"
 
+# 建立返回信息
 def build_rt(request, output):
     resptext = None
     if 'callback' in request.args:
@@ -20,6 +21,7 @@ def build_rt(request, output):
     resp.headers.add('Access-Control-Allow-Headers',"content-type,accept")
     return resp
 
+# 返回信息
 import importlib, os
 @app.route('/<c>.<m>', methods=['GET', 'POST','OPTIONS'])
 def handle(c, m):
@@ -39,6 +41,7 @@ def handle(c, m):
         output = "err={}".format(str(ex))
     return build_rt(request, output)
 
+# 根目录行为处理，调用build_rt函数
 @app.route('/')
 def rt():
     rt = ''
@@ -50,9 +53,10 @@ def rt():
     except Exception as ex:
         rt = {'errmsg':str(ex)}
     return build_rt(rt)
-    
+
 if __name__ == "__main__":
     #threading.Thread(target=main_thread).start()
+    # 运行Flask后端代码
     app.run(host='0.0.0.0', port=1234, debug=True)
     # app.run(host='0.0.0.0', port=1234)
 #else:

@@ -1,5 +1,5 @@
 -- read_query() gets the client query before it reaches the server
--- @param packet the mysql-packet sent by client
+-- @param packet : the mysql-packet sent by client
 --
 -- the packet contains a command-packet:
 --  * the first byte the type (e.g. proxy.COM_QUERY)
@@ -11,7 +11,7 @@ function read_query( packet )
     local _com = string.byte(packet)
     local _sql = string.sub(packet,2)
 	if string.byte(packet) == proxy.COM_QUERY then
-        -- 
+        --
     else
         print "X"
 	end
@@ -48,7 +48,7 @@ function read_auth()
 --			password.hash(password.hash(mapped.password))
 --		) then
 --
-		proxy.queries:append(1, 
+		proxy.queries:append(1,
 			proto.to_response_packet({
 				-- username = mapped.new_user,
 				username = new_user,
