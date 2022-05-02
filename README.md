@@ -3,6 +3,7 @@
 *    后端：Flask + Mysql
 
 貌似有两个数据库：dba是mysql，dba2是gbase
+```
 |-- dba
   |--dba.py main类负责连接数据库，并可以通过dosql函数执行sql查询，并返回结果
   |--mysql-proxy.lua 中间层
@@ -13,11 +14,16 @@
 |--flsk.py 后端程序（感觉和main.py功能很像，不知道有什么用。。）
 |--logic.py 前端通过调用此函数的get_routers方法获取数据表中的路由信息，并在侧边生成对应的菜单，并且可以对数据表进行curd
 |--global_variable.py 全局变量
+```
 
 tableau后端服务器的ip为：'http://10.94.81.132'
+
 DBA：数据库助手
+
 web.tmp：数据表
+
 tsc：tableau相关
+
 ## 1.1逻辑结构
 #### 登录
 前端通过调用main.py中的login接口，发送用户名和密码，后端收到请求，验证用户名和密码，验证成功就返回给前端userid, username, token，前端拿到后将userid和username临时存储到sessionStorage中，并跳转到对应的路由页面。
