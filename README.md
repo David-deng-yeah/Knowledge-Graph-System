@@ -19,13 +19,13 @@ DBA：数据库助手
 web.tmp：数据表
 tsc：tableau相关
 ## 1.1逻辑结构
-####登录
+#### 登录
 前端通过调用main.py中的login接口，发送用户名和密码，后端收到请求，验证用户名和密码，验证成功就返回给前端userid, username, token，前端拿到后将userid和username临时存储到sessionStorage中，并跳转到对应的路由页面。
 
-####报关单图谱查询
+#### 报关单图谱查询
 后端通过neo4j.py中的buildNodes和buildEdges函数对节点和边的信息进行预处理，添加颜色属性等。前端通过post请求调用neo4j.py中的post_graph方法继而调用_main_graph函数获得节点和边的数据，并在前端通过json_api和o2s将数据转为json格式，并且通过init_cy方法进行报关单图谱的渲染。并且将上次查询结果保存在localStorage中，方便下次打开时直接渲染上次的结果。
 
-####动态路由
+#### 动态路由
 前端通过调用logic.py中的get_routers方法获取数据表中的路由信息，返回一个json格式的路由表，并根据路由表中的信息在侧边菜单栏生成对应的菜单。并且在配置路由页面可通过调用logic.py中的routers_show,routers_insert,routers_delete,routers_update方法来实现对数据表的CRUD，从而实现在前端对路由的配置。
 ```json
 {
@@ -42,7 +42,7 @@ tsc：tableau相关
 }
 ```
 
-####Tableau view权限管理
+#### Tableau view权限管理
 前端通过logic.py中的check_view方法获取view_id，若返回值为null则无权限，展示403页面，反之截取url中的sheet_id字段获取content_url，并拼接成完整的url，展示tableau view页面。
 
 ## 1.2目录结构
@@ -59,13 +59,13 @@ tsc：tableau相关
 ####报关单图谱
 输入报关单号可查询该报关单号及其上下文的所有信息，右侧的Edge Length和Node Spacing可调节边的长度和节点的位置，Legend为Toggle，点击可隐藏该颜色对应的所有节点及其连接的边，再次点击可恢复。左侧为panzoom，可进行缩放及画布自适应。
 
-####Tableau View
+#### Tableau View
 所有Tableau View共用一个component，在目录src/components/TableauViewIframe.vue中，通过logic.check_view来判断用户是否有权限访问该视图，若有权限则展示tableau view中的内容，若无权限则展示src/components/403.vue中的内容。
 
-####配置路由
+#### 配置路由
 可直接在管理员权限下级菜单配置路由中添加或修改路由的相关信息，点击提交后该信息会自动保存到数据表web.tmp中,每次登录时，会自动获取数据表中的路由信息，动态加载路由和左侧菜单。
 
-####混编框架
+#### 混编框架
 通过Tableau js API实现对视图的一系列操作，包括Filter, Select等等。
 ```
 viz = new tableau.Viz(containerDiv, url, options);
@@ -74,7 +74,7 @@ options有多个可选参数，例如hideToolbar, hideHeader, hideTabs等等，�
 ```
 # 二、典型调用序列
 # 三、关键代码说明
-####TableauViewIframe.vue
+#### TableauViewIframe.vue
 这里采用iframe来展示tableau的视图，先给iframe一个默认的空白页作为src，然后通过read_from_router方法获取需要数据表中的url，然后通过change_url函数验证权限并且拿到token，然后拼接出完整的tableau view的url去替换空白页。
 ```vue
 <template>
@@ -151,7 +151,7 @@ options有多个可选参数，例如hideToolbar, hideHeader, hideTabs等等，�
 </style>
 
 ```
-####CustomsDeclarationGraph.vue
+#### CustomsDeclarationGraph.vue
 输入报关单号点击搜索按钮后触发on_go方法，post请求获取数据然后调用init_cy函数进行页面的渲染。
 ```
   let init_cy = async (eles) => {
